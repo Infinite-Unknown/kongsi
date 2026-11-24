@@ -10,7 +10,7 @@ Other agent sites can hand a bill to Kongsi too: its agent network is public dat
 action bridge shares a read-only `calculate_split` tool that runs Kongsi's own code on Kongsi's
 origin.
 
-![The bill after the assistant filled it in](assets/screenshot-bill-desktop.png)
+![The bill after the assistant filled it in](assets/screenshot-agent-filled-bill.png)
 
 ## Why
 
@@ -54,8 +54,8 @@ OpenRouter, Groq and Google AI Studio are listed), use **Connect with Otari / Op
 run a local model:
 
 - Ollama: open **Advanced settings**, set Provider URL `http://127.0.0.1:11434/v1`, Model
-  `qwen3.5:latest` (or any tool-calling model you have), and any text such as `ollama` as the
-  key. Ollama allows calls from `127.0.0.1` pages by default.
+  `qwen3.8:27b-mlx` (or any tool-calling model you have), and any text such as `ollama` as the
+  key. Ollama allows calls from `127.0.0.1` and `localhost` pages by default.
 
 Then click **Try the example meal** on the bill and press Enter in the chat.
 
@@ -109,7 +109,9 @@ Kongsi's bridge. Ask with seats or initials, never personal names, for example:
 `Split: S1 nasi lemak 14.90; S2 mee 10.50; all share satay 18. 10% svc, 6% tax, round 5 sen.`
 
 `examples/caller/` is a small example caller page (a dinner receipt) wired this way for local
-testing:
+testing. In a local run its assistant showed the consent card, nothing reached Kongsi before
+**Allow**, then Kongsi's network ran in the caller's page, called `calculate_split` through
+Kongsi's bridge and returned exact shares per seat:
 
 ```shell
 node scripts/serve.mjs --port 8471          # Kongsi on 127.0.0.1
@@ -147,8 +149,13 @@ DESIGN.md                             visual design and motion notes
 - Static site: the bill lives in this browser only (localStorage). No accounts, no sharing links.
 - A visitor needs their own AI provider (key, OAuth connect, or a local model); there is no
   site-paid default router.
-- The model must make tool calls reliably. Small local models work but are slow (one turn took
-  about two minutes with `qwen3.5` on a laptop).
+- The model must make tool calls reliably. With the small local `qwen3.5` the bill was filled
+  correctly, but about half the turns ended without a closing message, and one turn put every
+  dish on everyone. `qwen3.8:27b` did the full flow, including the cross-site call, in about a
+  minute per turn.
+- The model is told never to compute money, but a model can still add numbers in its own
+  wording (one reply added two amounts owed into a total). The bill on the page is the source
+  of truth.
 - `write` tools run without a dialog (only `clear_bill` asks), as in the reference runtime.
 - Amounts are Ringgit only; one item cannot be split unevenly (add it as two items).
 - Cross-site calls are bounded by the runtime: 90 s and 24 agent calls per visitor message.
