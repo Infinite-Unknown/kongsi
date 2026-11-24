@@ -1,26 +1,112 @@
+/* Makan Night: an example caller site. A warm restaurant receipt in a serif, maroon ink. */
+:root {
+  --paper: #fbf3ea;
+  --card: #fffdf9;
+  --ink: #2a1d17;
+  --muted: #6d5546;
+  --line: #ecd9c6;
+  --maroon: #7a2e1f;
+  --maroon-dark: #5c2116;
+  --maroon-wash: #f6e6dc;
+  --focus: #9a6a00;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --serif: Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
 * { box-sizing: border-box; }
-body { margin: 0; font: 16px/1.5 Georgia, "Times New Roman", serif; background: #fbf3ea; color: #2a1d17; }
-header, main { width: min(1100px, 100% - 32px); margin-inline: auto; }
-header { padding: 28px 0 8px; }
-.tag { display: inline-block; font: 600 12px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .1em; background: #7a2e1f; color: #fff; padding: 3px 10px; border-radius: 99px; margin: 0; }
-h1 { font-size: 2.6rem; margin: 8px 0 4px; }
-main { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; padding-bottom: 40px; }
-.receipt { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ecd9c6; }
+body { margin: 0; font: 16px/1.5 var(--serif); background: var(--paper); color: var(--ink); }
+::selection { background: var(--maroon-wash); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+a { color: var(--maroon); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+header, main { width: min(1240px, 100% - 32px); margin-inline: auto; }
+header { padding: 32px 0 16px; }
+header p { max-width: 70ch; color: var(--muted); margin: 8px 0 0; }
+h1 { font-size: 2.6rem; line-height: 1.05; margin: 0; letter-spacing: -0.01em; }
+main { display: grid; grid-template-columns: 360px 1fr; gap: 24px; align-items: start; padding-bottom: 48px; }
+.receipt, .assistant { background: var(--card); padding: 24px; border-radius: 14px; border: 1px solid var(--line); }
+.assistant h2, .receipt h2 { margin: 0 0 12px; }
 table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-th, td { text-align: left; padding: 6px 4px; border-bottom: 1px dashed #ecd9c6; }
-.n { text-align: right; font-family: ui-monospace, Menlo, monospace; }
-#charges { font-size: .9rem; color: #6d5546; }
-.assistant { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ecd9c6; }
-.assistant h2, .receipt h2 { margin-top: 0; }
-.assistant-note { font-size: .85rem; color: #6d5546; }
-#agent-app { --ns-font: system-ui, sans-serif; --ns-bg: #ffffff; --ns-fg: #2a1d17; --ns-primary: #7a2e1f; --ns-accent: #5c2116; --ns-border: #ecd9c6; --ns-panelbg: #ffffff; --ns-msgbg: #f6ece2; --ns-muted: #6d5546; }
+th, td { text-align: left; padding: 8px 4px; border-bottom: 1px dashed var(--line); }
+th { font-size: .82rem; color: var(--muted); font-weight: 600; }
+.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+#charges { font-size: .9rem; color: var(--muted); margin-bottom: 0; }
+.assistant > p { margin: 0 0 12px; max-width: 64ch; }
+.assistant-note { font-size: .85rem; color: var(--muted); }
+#assistant-status { font: 500 .88rem/1.4 var(--serif); color: var(--muted); display: flex; align-items: center; gap: 8px; }
+#assistant-status::before { content: ""; width: 8px; height: 8px; border-radius: 99px; background: var(--line); flex: none; }
+#assistant-status[data-state="ready"] { color: var(--maroon); }
+#assistant-status[data-state="ready"]::before { background: var(--maroon); }
+#assistant-status[data-state="setup"]::before { background: #c98a1b; }
+
+#agent-app { --ns-font: var(--serif); --ns-bg: #fffdf9; --ns-fg: #2a1d17; --ns-primary: #7a2e1f; --ns-accent: #5c2116; --ns-border: #ecd9c6; --ns-panelbg: #fffdf9; --ns-msgbg: #f6ece2; --ns-muted: #6d5546; --ns-radius: 14px; }
+#agent-app :is(input, select, button, textarea) { font-family: var(--serif); }
+#agent-app button { margin: 0; }
+#agent-app .ns-header { border-bottom: 1px solid var(--line); gap: 8px; flex-wrap: wrap; }
+#agent-app .ns-llmbadge { font: 600 12px/1 var(--serif); padding: 6px 10px; border: 0; border-radius: 99px; }
+#agent-app .ns-llmbadge.error { background: #fbefd2; color: #7a5300; }
+#agent-app .ns-llmbadge.real { background: var(--maroon-wash); color: var(--maroon); }
+#agent-app .ns-devtoggle { border-radius: 99px; border-color: var(--line); }
 .assistant-panels { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; margin-top: 12px; }
 #agent-app.ns-composed-app [data-ns-slot="chat"] { height: 560px; }
-#agent-app .ns-chat { background: var(--ns-bg); }
-#agent-app button { margin: 0; }
-#agent-app .ns-consent { background: #fffbeb; }
+#agent-app .ns-chat { background: var(--ns-bg); border-radius: 14px; }
+#agent-app .ns-msgs { padding: 16px; gap: 12px; }
+#agent-app .ns-msg { overflow-wrap: break-word; max-width: 92%; padding: 10px 16px; animation: rise-in 240ms var(--ease-out) both; }
+#agent-app .ns-msg.bot { border-bottom-left-radius: 4px; }
+#agent-app .ns-msg.user { border-bottom-right-radius: 4px; }
+#agent-app .ns-msg :is(td, th) { font-variant-numeric: tabular-nums; font-size: .92rem; }
 #agent-app .ns-msgs:has(.ns-consent-actions) > .ns-turn-status { display: none; }
-#agent-app .ns-msg { overflow-wrap: break-word; }
-#agent-app .ns-consent-actions { flex-wrap: wrap; }
-#agent-app .ns-consent-actions button { white-space: nowrap; }
-@media (max-width: 860px) { main { grid-template-columns: 1fr; } .assistant-panels { grid-template-columns: 1fr; } }
+#agent-app.ns-composed-app [data-ns-slot="chat"] > .ns-chat { min-height: 0; }
+#agent-app .ns-inputbar input { flex: 1 1 160px; font-size: 1rem; padding: 10px 12px; border-color: var(--line); border-radius: 8px; }
+#agent-app .ns-inputbar input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px var(--maroon-wash); }
+#agent-app .ns-inputbar button { padding: 10px 16px; transition: transform 140ms var(--ease-out); }
+#agent-app .ns-inputbar button:active:not(:disabled) { transform: scale(0.97); }
+#agent-app .ns-agents { border-color: var(--line); border-radius: 14px; }
+#agent-app .ns-anode { border-color: var(--line); background: var(--card); }
+#agent-app .ns-anode.active { box-shadow: 0 0 0 3px var(--maroon-wash); }
+#agent-app .ns-anode.done .ns-adot { background: var(--maroon); }
+/* Drawn icons in place of the runtime's emoji: a receipt for this site, a globe for a partner. */
+#agent-app .ns-aicon { font-size: 0; width: 20px; height: 20px; flex: none; background: var(--maroon);
+  -webkit-mask: var(--icon) center / 18px no-repeat; mask: var(--icon) center / 18px no-repeat;
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h12v18l-3-2-3 2-3-2-3 2z'/%3E%3Cpath d='M9 8h6M9 12h6'/%3E%3C/svg%3E"); }
+#agent-app .ns-anode:has(.ns-aaddr) .ns-aicon { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18'/%3E%3C/svg%3E"); }
+
+/* The consent card: the one moment this page asks before contacting another site. */
+#agent-app .ns-consent { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; max-width: 92%;
+  box-shadow: 0 1px 0 var(--line), 0 18px 40px -24px rgba(42, 29, 23, .35); animation: card-in 280ms var(--ease-out) both; }
+#agent-app .ns-consent-title { font-size: 1rem; line-height: 1.35; margin-bottom: 4px; }
+#agent-app .ns-consent-sub { font: 12px var(--mono); color: var(--muted); margin-bottom: 10px; }
+#agent-app .ns-consent-req { font-size: .9rem; color: var(--ink); background: var(--maroon-wash); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; }
+#agent-app .ns-consent-actions { flex-wrap: wrap; gap: 8px; }
+#agent-app .ns-consent-actions button { font: 600 .9rem var(--serif); white-space: nowrap; padding: 8px 16px; border-radius: 8px; transition: transform 140ms var(--ease-out), background-color 160ms ease; }
+#agent-app .ns-consent-actions button:active { transform: scale(0.97); }
+#agent-app .ns-consent-actions button[data-d="always"] { background: transparent; color: var(--maroon); box-shadow: inset 0 0 0 1px var(--maroon); }
+#agent-app .ns-consent-actions button.ghost { background: transparent; color: var(--muted); border: 0; text-decoration: underline; text-underline-offset: 3px; }
+#agent-app .ns-consent-done { color: var(--maroon); }
+
+#agent-app .ns-settings { font-size: .88rem; }
+#agent-app .ns-settings > summary { color: var(--ink); font-weight: 600; }
+#agent-app .ns-settings-body :is(input[type=text], input[type=password], input:not([type]), select) { font-size: .95rem; padding: 8px 12px; border-color: var(--line); border-radius: 8px; }
+#agent-app .ns-key-help { background: #f8efe4; border: 0; border-radius: 12px; }
+#agent-app .ns-key-providers a { border-color: var(--line); color: var(--maroon); }
+#agent-app .ns-settings-body button { padding: 8px 14px; border-radius: 8px; }
+#agent-app .ns-hint.warn { color: var(--muted); font-weight: 500; }
+@media (hover: hover) and (pointer: fine) {
+  #agent-app .ns-consent-actions button[data-d="allow"]:hover, #agent-app .ns-inputbar .ns-send:hover { background: var(--maroon-dark); }
+  #agent-app .ns-consent-actions button[data-d="always"]:hover { background: var(--maroon-wash); }
+  #agent-app .ns-consent-actions button.ghost:hover { color: var(--ink); }
+}
+@keyframes rise-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes fade-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  #agent-app .ns-msg, #agent-app .ns-consent { animation: fade-in 150ms ease both; }
+  #agent-app .ns-inputbar button:active, #agent-app .ns-consent-actions button:active { transform: none; }
+}
+@media (max-width: 860px) {
+  main { grid-template-columns: 1fr; }
+  .assistant-panels { grid-template-columns: 1fr; }
+  .receipt, .assistant { padding: 16px; }
+  #agent-app.ns-composed-app [data-ns-slot="chat"] { height: 480px; }
+  #agent-app .ns-consent { max-width: 100%; }
+}

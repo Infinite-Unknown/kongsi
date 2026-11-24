@@ -31,7 +31,7 @@ Built on the [Minimum Viable Specification for a Worldwide Agentic Web](https://
 | Peer link map | `links.json` |
 | Browser runtime | `runtime/` — the nsdeploy browser runtime (Apache-2.0) as patched by the agentic-web `agentify-website` skill, unchanged |
 | Interface for people | the chat on `index.html`, next to the live bill |
-| LLM and key settings (BYOK) | **⚙ AI model settings** under the chat: any OpenAI-compatible provider, Connect with Otari / OpenRouter, or a local model |
+| LLM and key settings (BYOK) | **AI model settings** under the chat: any OpenAI-compatible provider, Connect with Otari / OpenRouter, or a local model |
 | Grounded site actions | `site-actions.js`: 10 `website_*` tools (read, write, irreversible) wrapping `js/bill-store.js` |
 | User-owned writes | `clear_bill` is irreversible: `site.js` shows the site's own confirmation dialog with what will be cleared |
 | Callable by other agent sites | `bridge/` + `bridge/bridge-actions.js` share `calculate_split` (read only, `callerOrigins: ["*"]`) |
@@ -48,7 +48,7 @@ Needs Node.js 22 or newer. No dependencies, no build step.
 node scripts/serve.mjs --port 8471
 ```
 
-Open http://127.0.0.1:8471/. Expand **⚙ AI model settings** under the chat and either
+Open http://127.0.0.1:8471/. Press **Set up the AI model** (or expand **AI model settings** under the chat) and either
 paste a key for a provider that allows browser calls (hosted Otari is the default; OpenAI,
 OpenRouter, Groq and Google AI Studio are listed), use **Connect with Otari / OpenRouter**, or
 run a local model:

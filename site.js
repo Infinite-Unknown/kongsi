@@ -56,18 +56,75 @@ export class AssistantMount {
       // runtime's "API key required" badge in runtime/ui.js.
       const needsKey = !booted.engine.mockLLM
         && (!booted.engine.byokKey || booted.engine.byokKey === "demo");
-      status.textContent = needsKey
-        ? "Assistant needs your AI provider key. Add it in AI model settings below."
-        : "Assistant connected to this page.";
+      AssistantMount.tidyChrome();
+      AssistantMount.showStatus(needsKey ? "setup" : "ready", needsKey
+        ? "The assistant needs your AI provider key first."
+        : "Assistant connected to this page.");
       if (!needsKey) {
         AssistantMount.greet();
       }
       return booted.engine;
     } catch (error) {
       // The page must keep working without the assistant.
-      status.textContent = "The assistant could not load. You can still use the page directly.";
+      AssistantMount.showStatus("error", "The assistant could not load. You can still use the page directly.");
       console.error("Assistant startup failed", error);
       return null;
+    }
+  }
+
+  /**
+   * Show the assistant's state above the chat. Without a key, also show the button that
+   * opens the AI model settings, so the first step is a control and not only a sentence.
+   *
+   * :param state: "setup", "ready" or "error".
+   * :param text: The sentence for the status line.
+   */
+  static showStatus(state, text) {
+    const status = document.querySelector("#assistant-status");
+    const row = document.querySelector("#assistant-status-row");
+    const button = document.querySelector("#open-settings");
+    if (status) {
+      status.textContent = text;
+    }
+    if (row) {
+      row.dataset.state = state;
+    }
+    if (button) {
+      button.hidden = state !== "setup";
+      button.onclick = AssistantMount.openSettings;
+    }
+  }
+
+  /**
+   * Open the AI model settings, bring them into view and put the cursor in the key field.
+   */
+  static openSettings() {
+    const settings = document.querySelector("#agent-app details.ns-settings");
+    if (!settings) {
+      return;
+    }
+    settings.open = true;
+    const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    settings.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    document.querySelector("#ns-key")?.focus({ preventScroll: true });
+  }
+
+  /**
+   * The runtime labels some controls with glyphs (a gear, a link). The stylesheet draws
+   * this page's icons, so take the glyphs out of the visible labels. The runtime files
+   * themselves stay unchanged.
+   */
+  static tidyChrome() {
+    const strip = (node) => {
+      if (node && node.firstChild && node.firstChild.nodeType === 3) {
+        node.firstChild.nodeValue = node.firstChild.nodeValue.replace(/^\s*[⚙\u{1F517}]️?\s*/u, "");
+      }
+    };
+    strip(document.querySelector("#agent-app details.ns-settings > summary"));
+    strip(document.querySelector("#ns-devtoggle"));
+    const greeting = document.querySelector("#ns-msgs .ns-msg.bot");
+    if (greeting) {
+      greeting.textContent = greeting.textContent.replace(/⚙️?\s*/gu, "");
     }
   }
 
@@ -153,6 +210,9 @@ export class AssistantMount {
     const title = card ? card.querySelector(".ns-consent-title") : null;
     if (!title) {
       return;
+    }
+    if (title.firstChild && title.firstChild.nodeType === 3) {
+      title.firstChild.nodeValue = title.firstChild.nodeValue.replace(/^\s*\u{1F517}️?\s*/u, "");
     }
     card.setAttribute("role", "group");
     card.setAttribute("aria-label", title.textContent);

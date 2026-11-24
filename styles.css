@@ -12,6 +12,7 @@
   --green-wash: #e5f0eb;
   --saffron: #e3a422;
   --saffron-soft: #fbefd2;
+  --focus: #9a6a00; /* deep kaya: 4.7:1 on the card, 3.9:1 on the table */
   --red: #a3302a;
   --red-wash: #f8e7e5;
   /* type */
@@ -45,7 +46,10 @@ body {
 a { color: var(--green); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
 code { font-family: var(--mono); font-size: 0.85em; background: #efe6d4; padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
-:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.masthead :focus-visible { outline-color: var(--saffron); }
+/* Headings that take focus programmatically (dialog and consent titles, tabindex -1) are not controls. */
+[tabindex="-1"]:focus { outline: none; }
 .wrap { width: min(1240px, 100% - 2 * var(--gutter)); margin-inline: auto; }
 h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0.01em; }
 
@@ -93,6 +97,7 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0
 .receipt-empty { padding: var(--s2) 0 var(--s3); }
 .receipt-empty p { color: var(--muted); font-size: 0.95rem; margin: 0 0 var(--s3); }
 .lines { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.lines th.who-h { padding-inline: var(--s2); }
 .lines th { text-align: left; font: 600 0.7rem var(--sans); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: var(--s1) 0; }
 .lines td { padding: var(--s2) 0; border-bottom: 1px dashed var(--line); vertical-align: top; }
 .lines td.who { color: var(--muted); font-size: 0.82rem; padding-inline: var(--s2); }
@@ -104,8 +109,8 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0
 .totals div { display: flex; justify-content: space-between; padding: 2px 0; }
 .totals dt { font-family: var(--sans); color: var(--muted); }
 .totals dd { margin: 0; }
-.totals .grand { border-top: 2px solid var(--ink); margin-top: var(--s2); padding-top: var(--s2); font-size: 1.3rem; font-weight: 700; }
-.totals .grand dt { color: var(--ink); font: 800 1.15rem var(--display); }
+.totals .grand { border-top: 2px solid var(--ink); margin-top: var(--s2); padding-top: var(--s3); align-items: baseline; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
+.totals .grand dt { color: var(--ink); font: 800 1.25rem var(--display); letter-spacing: -0.01em; }
 
 /* Signature: the split bar */
 .splitbar { margin-top: var(--s4); height: 12px; border-radius: 999px; background: #efe6d4; overflow: hidden; position: relative; }
@@ -216,9 +221,30 @@ main button.icon-btn:not(#agent-app button) { background: transparent; color: va
 .footer { color: var(--muted); font-size: 0.85rem; padding: var(--s6) 0 var(--s7); border-top: 1px solid var(--line); margin-top: var(--s8); }
 .footer p { margin: var(--s1) 0; }
 
-/* ---------- Assistant (runtime UI) ---------- */
-.assistant-note { font-size: 0.88rem; color: var(--muted); margin: 0 0 var(--s1); }
-#assistant-status { font-size: 0.85rem; color: var(--green); font-weight: 600; margin: 0 0 var(--s3); }
+/* ---------- Assistant (runtime UI, themed from the page; runtime files unchanged) ---------- */
+/* One heading row: "Ask Kongsi" on the left, the model state and Developer toggle on the
+   right. #agent-app lays its slots straight into the panel's grid. */
+.assistant { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s4); align-items: center; }
+.assistant > *, #agent-app > * { grid-column: 1 / -1; }
+.assistant > .panel-head { grid-column: 1; grid-row: 1; }
+#agent-app { display: contents; }
+#agent-app > [data-ns-slot="header"] { grid-column: 2; grid-row: 1; }
+.assistant .panel-head h2 { margin: 0; }
+.assistant-note { font-size: 0.88rem; color: var(--muted); margin: var(--s1) 0 0; max-width: 62ch; }
+
+/* Status: a quiet line when connected, a callout with one button when a key is missing. */
+.assistant-status { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: var(--s3) 0 0; min-height: 24px; }
+#assistant-status { font-size: 0.85rem; color: var(--muted); font-weight: 500; margin: 0; display: inline-flex; align-items: center; gap: var(--s2); }
+#assistant-status::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--line); flex: none; }
+.assistant-status[data-state="ready"] #assistant-status { color: var(--green); }
+.assistant-status[data-state="ready"] #assistant-status::before { background: var(--green); }
+.assistant-status[data-state="error"] #assistant-status { color: var(--red); }
+.assistant-status[data-state="error"] #assistant-status::before { background: var(--red); }
+.assistant-status[data-state="setup"] { background: var(--saffron-soft); border-radius: var(--r-control); padding: var(--s2) var(--s2) var(--s2) var(--s4); justify-content: space-between; }
+.assistant-status[data-state="setup"] #assistant-status { color: var(--ink); flex: 1 1 260px; }
+.assistant-status[data-state="setup"] #assistant-status::before { background: var(--saffron); }
+.assistant-status, #assistant-status { transition: background-color 200ms ease, color 200ms ease; }
+
 #agent-app {
   --ns-font: var(--sans);
   --ns-bg: #fffdf8;
@@ -229,27 +255,135 @@ main button.icon-btn:not(#agent-app button) { background: transparent; color: va
   --ns-panelbg: #fffdf8;
   --ns-msgbg: #f3ecdd;
   --ns-muted: #675e53;
+  --ns-radius: 14px;
 }
-.assistant-panels { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: var(--s3); margin-top: var(--s3); }
-#agent-app.ns-composed-app [data-ns-slot="chat"] { height: clamp(480px, calc(100vh - 420px), 620px); }
-#agent-app .ns-chat { background: var(--ns-bg); }
-#agent-app input[type="checkbox"], #agent-app input[type="radio"] { width: auto; }
-#agent-app .ns-header { flex-wrap: wrap; }
-#agent-app .ns-settings-body label { margin: 4px 0; font-weight: 400; }
+#agent-app :is(input, select, button, textarea) { font-family: var(--sans); }
+#agent-app button { margin: 0; }
+
+/* Header slot: state pill + Developer toggle. The runtime's title repeats the panel heading. */
+#agent-app .ns-header { border: 0; padding: 0; gap: var(--s2); flex-wrap: wrap; justify-content: flex-end; }
+#agent-app .ns-header .ns-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#agent-app .ns-llmbadge { margin-left: 0; display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; border: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#agent-app .ns-llmbadge::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: currentColor; flex: none; }
+#agent-app .ns-llmbadge.error { background: var(--saffron-soft); color: #7a5300; }
+#agent-app .ns-llmbadge.real { background: var(--green-wash); color: var(--green); }
+#agent-app .ns-llmbadge.pending, #agent-app .ns-llmbadge.mock { background: #efe6d4; color: var(--muted); }
+#agent-app .ns-devtoggle { font: 500 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: transparent; transition: background-color 160ms ease, color 160ms ease, transform 140ms var(--ease-out); }
+#agent-app .ns-devtoggle:active { transform: scale(0.97); }
+#agent-app .ns-devtoggle.on { background: var(--ink); border-color: var(--ink); color: var(--card); }
+#agent-app .ns-breadcrumb { font: 500 12px var(--mono); }
+
+/* Chat first, full width. On this page the agents rail is a one-line strip above the
+   messages; it still lights up while the assistant works. The Developer view keeps a column. */
+.assistant-panels { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); margin-top: var(--s4); }
+#agent-app[data-dev="true"] .assistant-panels { grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); }
+#agent-app:not([data-dev="true"]) [data-ns-slot="agents"] { order: -1; }
+#agent-app .ns-agents { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--s2) var(--s3); border: 0; border-radius: 0; padding: 0; background: transparent; overflow: visible; }
+#agent-app .ns-agents h3 { font: 600 11px var(--sans); letter-spacing: 0.08em; color: var(--muted); }
+#agent-app .ns-agents #ns-anodes { display: flex; flex-wrap: wrap; gap: var(--s2); }
+#agent-app .ns-anode { gap: var(--s2); padding: 4px 10px 4px 6px; border-radius: 999px; border-color: var(--line); background: var(--card); transition: border-color 160ms ease, box-shadow 200ms var(--ease-out); }
+#agent-app .ns-anode .ns-ameta { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+#agent-app .ns-anode .ns-aname { font-size: 13px; }
+#agent-app .ns-anode .ns-arole, #agent-app .ns-anode .ns-aaddr { font-size: 12px; }
+#agent-app .ns-anode .ns-adot { width: 8px; height: 8px; background: var(--line); }
+#agent-app .ns-anode.done .ns-adot { background: var(--green); }
+#agent-app .ns-anode.active { box-shadow: 0 0 0 3px var(--green-wash); }
+/* Drawn icons in place of the runtime's emoji: the Kongsi mark for this page's agent,
+   a globe for a partner site. */
+#agent-app .ns-aicon { font-size: 0; width: 20px; height: 20px; flex: none; border-radius: 6px; background: url("favicon.svg") center / 20px 20px no-repeat; }
+#agent-app .ns-anode:has(.ns-aaddr) .ns-aicon {
+  background: var(--green);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18'/%3E%3C/svg%3E") center / 18px no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18'/%3E%3C/svg%3E") center / 18px no-repeat;
+}
+
+/* The chat */
+#agent-app.ns-composed-app [data-ns-slot="chat"] { height: clamp(420px, calc(100vh - 440px), 600px); }
+#agent-app.ns-composed-app [data-ns-slot="chat"] > .ns-chat { min-height: 0; }
+#agent-app .ns-chat { background: var(--ns-bg); border-color: var(--line); border-radius: var(--r-card); }
+#agent-app .ns-msgs { padding: var(--s4); gap: var(--s3); scrollbar-width: thin; scrollbar-color: #cdbfa8 transparent; }
+#agent-app .ns-msg { overflow-wrap: break-word; padding: 10px var(--s4); line-height: 1.5; font-size: 0.97rem; }
+#agent-app .ns-msg.bot { border-bottom-left-radius: 4px; }
+#agent-app .ns-msg.user { border-bottom-right-radius: 4px; }
+#agent-app .ns-msg :is(table, td, th) { font-variant-numeric: tabular-nums; }
+#agent-app .ns-msg table { background: transparent; }
+#agent-app .ns-turn-status { background: transparent; padding-left: 0; font-size: 0.88rem; }
+#agent-app .ns-msgs:has(.ns-consent-actions) > .ns-turn-status { display: none; }
+#agent-app .ns-action-status { border-bottom: 1px dashed var(--line); color: var(--muted); padding: var(--s2) var(--s4) !important; }
+#agent-app .ns-action-status > summary { cursor: pointer; font-weight: 500; }
+#agent-app .ns-action-status p { margin: var(--s1) 0 0; }
+#agent-app .ns-inputbar { padding: var(--s3); gap: var(--s2); border-top-color: var(--line); }
+#agent-app .ns-inputbar input { font-size: 1rem; padding: 10px var(--s3); border-color: var(--line); border-radius: var(--r-control); background: #fff; transition: border-color 160ms ease, box-shadow 160ms ease; }
+#agent-app .ns-inputbar input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-wash); }
+#agent-app .ns-inputbar input:focus-visible { outline: none; }
+#agent-app .ns-inputbar button { font-weight: 600; padding: 10px var(--s4); border-radius: var(--r-control); transition: background-color 160ms ease, transform 140ms var(--ease-out); }
+#agent-app .ns-inputbar button:active:not(:disabled) { transform: scale(0.97); }
+#agent-app #ns-newchat { color: var(--muted) !important; border-color: var(--line) !important; }
+
+/* Widgets and the consent card */
+#agent-app input[type="checkbox"], #agent-app input[type="radio"] { width: auto; accent-color: var(--green); }
 #agent-app .ns-w-label { font-family: inherit; }
+#agent-app .ns-widget { border-color: var(--line); background: var(--card); }
 #agent-app .ns-widget label { margin: 0; }
 #agent-app .ns-w-radio label, #agent-app .ns-w-multi label, #agent-app .ns-w-toggle { font-weight: 400; }
 #agent-app .ns-w-toggle { font-size: 13px; }
-#agent-app button { margin: 0; }
 #agent-app .ns-w-choice { color: var(--ns-fg); }
 #agent-app .ns-devtoggle:not(.on):hover, #agent-app .ns-modal-close:hover { background: transparent; }
 #agent-app .ns-w-choice:disabled:hover { background: #fafbfc; }
-#agent-app .ns-consent { background: #fffbeb; }
-#agent-app .ns-msgs:has(.ns-consent-actions) > .ns-turn-status { display: none; }
-#agent-app .ns-msg { overflow-wrap: break-word; }
+#agent-app .ns-consent { background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-paper); }
+#agent-app .ns-consent-sub { font-family: var(--mono); color: var(--muted); }
 #agent-app .ns-consent-actions { flex-wrap: wrap; }
 #agent-app .ns-consent-actions button { white-space: nowrap; }
-#agent-app .ns-msgs { scrollbar-width: thin; scrollbar-color: #cdbfa8 transparent; }
+#agent-app .ns-consent-actions button.ghost { color: var(--muted); border-color: var(--line); }
+#agent-app .ns-consent-done { color: var(--green); }
+
+/* AI model settings: the page's own field style, type and spacing. */
+#agent-app .ns-settings { border-top: 0; font-size: 0.88rem; margin-top: var(--s3); }
+#agent-app .ns-settings > summary, #agent-app .ns-settings-advanced > summary {
+  list-style: none; display: inline-flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) 0; color: var(--ink); font-weight: 600; cursor: pointer; border-radius: 6px;
+}
+#agent-app .ns-settings > summary::-webkit-details-marker, #agent-app .ns-settings-advanced > summary::-webkit-details-marker { display: none; }
+#agent-app .ns-settings > summary::before, #agent-app .ns-settings-advanced > summary::before {
+  content: ""; width: 16px; height: 16px; flex: none; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 10.5 8 6 12.5'/%3E%3C/svg%3E") center / 16px no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 10.5 8 6 12.5'/%3E%3C/svg%3E") center / 16px no-repeat;
+  transition: transform 200ms var(--ease-out);
+}
+#agent-app .ns-settings[open] > summary::before, #agent-app .ns-settings-advanced[open] > summary::before { transform: rotate(90deg); }
+#agent-app .ns-settings-advanced > summary { color: var(--muted); font-weight: 500; }
+#agent-app .ns-settings-body { padding: var(--s2) 0 0; gap: var(--s3); }
+#agent-app .ns-settings-body label { margin: 0; gap: var(--s1); font-weight: 600; font-size: 0.82rem; color: var(--muted); }
+#agent-app .ns-settings-body :is(input[type=text], input[type=password], input:not([type]), select) {
+  font: 400 0.95rem var(--sans); color: var(--ink); background: #fff;
+  padding: var(--s2) var(--s3); border: 1px solid var(--line); border-radius: var(--r-control);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+#agent-app .ns-settings-body :is(input, select):focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-wash); }
+#agent-app .ns-in-use { font-size: 0.88rem; color: var(--ink); }
+#agent-app .ns-key-help { background: #f8f2e6; border: 0; border-radius: var(--r-card); padding: var(--s4); gap: var(--s2); }
+#agent-app .ns-key-help strong { font: 700 1rem var(--display); }
+#agent-app .ns-key-help > a, #agent-app :is(.ns-openrouter-key, .ns-otari-key) a { color: var(--green); }
+#agent-app .ns-key-providers { gap: var(--s2); margin-top: var(--s1); }
+#agent-app .ns-key-providers a { border: 1px solid var(--line); background: var(--card); color: var(--green); border-radius: var(--r-control); padding: var(--s2) var(--s3); transition: border-color 160ms ease, background-color 160ms ease; }
+#agent-app .ns-key-providers small { font-size: 11px; color: var(--muted); }
+#agent-app .ns-settings-body button { font: 600 0.9rem var(--sans); padding: 9px var(--s4); border-radius: var(--r-control); transition: background-color 160ms ease, transform 140ms var(--ease-out); }
+#agent-app .ns-settings-body button:active { transform: scale(0.97); }
+#agent-app .ns-settings-body button.ghost { color: var(--green); border-color: var(--line); background: transparent; }
+#agent-app .ns-start-actions { gap: var(--s2); }
+/* One primary: Save and start. The Connect buttons are the alternatives. */
+#agent-app .ns-start-actions :is(#ns-connect-otari, #ns-connect-openrouter) { background: transparent; color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+#agent-app .ns-hint { font-size: 0.78rem; line-height: 1.45; color: var(--muted); margin-top: 0; }
+#agent-app .ns-hint.warn { color: var(--muted); font-weight: 500; }
+#agent-app .ns-settings-advanced { border-top: 1px dashed var(--line); }
+#agent-app .ns-settings-advanced-body { gap: var(--s3); padding: var(--s1) 0 var(--s2); }
+@media (hover: hover) and (pointer: fine) {
+  #agent-app .ns-key-providers a:hover { border-color: var(--green); background: var(--green-wash); }
+  #agent-app .ns-settings-body button:not(.ghost, #ns-connect-otari, #ns-connect-openrouter):hover, #agent-app .ns-inputbar button.ns-send:not(:disabled):hover { background: var(--green-dark); }
+  #agent-app .ns-settings-body button.ghost:hover, #agent-app .ns-start-actions :is(#ns-connect-otari, #ns-connect-openrouter):hover { background: var(--green-wash); }
+  #agent-app .ns-devtoggle:not(.on):hover { color: var(--ink); border-color: var(--muted); }
+  #agent-app .ns-anode:hover { border-color: var(--green); }
+}
 
 /* Dialogs added to <body> by site.js and the runtime */
 body > dialog { border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s5); max-width: min(520px, calc(100% - 2 * var(--s4))); color: var(--ink); background: var(--card); box-shadow: var(--shadow-paper); }
@@ -262,6 +396,8 @@ body > dialog button:active { transform: scale(0.97); }
 .assistant-review dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--s1) var(--s4); margin: var(--s3) 0; }
 .assistant-review dt { font-weight: 600; color: var(--muted); }
 .assistant-review dd { margin: 0; font: 500 0.95rem var(--mono); }
+.assistant-review dd:first-of-type { font: 600 1rem var(--sans); }
+.assistant-review summary { cursor: pointer; color: var(--muted); }
 .assistant-review details { margin: var(--s2) 0 var(--s4); font-size: 0.85rem; }
 .assistant-review pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f3ecdd; padding: var(--s2); border-radius: var(--r-control); }
 body > dialog button.assistant-decline { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
@@ -278,6 +414,10 @@ body > dialog button.assistant-decline { background: transparent; color: var(--i
 .lines tr.print td { animation: print-in 320ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
 @keyframes print-in { from { opacity: 0; transform: translateY(-6px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0 0 0 0); } }
 .shares li.enter { animation: rise-in 260ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+/* New chat messages rise in once; the runtime appends each message a single time. */
+#agent-app .ns-msg { animation: rise-in 240ms var(--ease-out) both; }
+#agent-app .ns-consent { animation: card-in 280ms var(--ease-out) both; }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
 @keyframes rise-in { from { opacity: 0; transform: translateY(8px); } }
 
 @media (prefers-reduced-motion: reduce) {
@@ -285,7 +425,8 @@ body > dialog button.assistant-decline { background: transparent; color: var(--i
   .is-loading .intro h1, .is-loading .intro .lede, .is-loading .assistant, .is-loading .receipt-col { transform: none; }
   .intro h1, .intro .lede, .assistant, .receipt-col { transition: opacity 150ms ease; transition-delay: 0ms; }
   .seg { transition: none; }
-  .lines tr.print td, .shares li.enter { animation: fade-in 150ms ease both; animation-delay: 0ms; }
+  .lines tr.print td, .shares li.enter, #agent-app .ns-msg, #agent-app .ns-consent { animation: fade-in 150ms ease both; animation-delay: 0ms; }
+  #agent-app .ns-settings > summary::before, #agent-app .ns-settings-advanced > summary::before { transition: none; }
   .check.ok .tick path { stroke-dashoffset: 0; transition: none; }
   body > dialog[open] { animation: fade-in 150ms ease; }
   main button:not(#agent-app button):active { transform: none; }
@@ -303,9 +444,15 @@ body > dialog button.assistant-decline { background: transparent; color: var(--i
   :root { --gutter: 16px; }
   .intro { padding-top: var(--s5); }
   .editor-grid { grid-template-columns: 1fr; }
-  .assistant-panels { grid-template-columns: 1fr; }
-  #agent-app [data-ns-slot="agents"] { display: none; }
+  .assistant-panels, #agent-app[data-dev="true"] .assistant-panels { grid-template-columns: 1fr; }
+  #agent-app:not([data-dev="true"]) [data-ns-slot="agents"] { display: none; }
   #agent-app.ns-composed-app [data-ns-slot="chat"] { height: 460px; }
+  .assistant > .panel-head, #agent-app > [data-ns-slot="header"] { grid-column: 1 / -1; }
+  #agent-app > [data-ns-slot="header"] { grid-row: auto; margin-top: var(--s2); }
+  #agent-app .ns-header { justify-content: flex-start; }
+  .lede { font-size: 0.95rem; }
+  .totals .grand { font-size: 1.5rem; }
+  #agent-app .ns-msg { max-width: 92%; }
   .panel { padding: var(--s4); }
   .receipt { padding: var(--s4); }
   .tear { margin-inline: calc(-1 * var(--s4)); }

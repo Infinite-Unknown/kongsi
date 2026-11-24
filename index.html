@@ -47,7 +47,10 @@
           <h2 id="assistant-heading">Ask Kongsi</h2>
         </div>
         <p class="assistant-note">Describe the meal in your own words. Your messages and this bill go to the AI provider you choose in the settings below.</p>
-        <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+        <div class="assistant-status" id="assistant-status-row">
+          <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+          <button type="button" id="open-settings" hidden>Set up the AI model</button>
+        </div>
         <div id="agent-app">
           <div data-ns-slot="header"></div>
           <div class="assistant-panels">
@@ -69,7 +72,7 @@
             <button type="button" id="try-example" class="ghost">Try the example meal</button>
           </div>
           <table class="lines" id="lines" aria-label="Items on the bill">
-            <thead><tr><th scope="col">Item</th><th scope="col">Shared by</th><th scope="col" class="num">Amount</th></tr></thead>
+            <thead><tr><th scope="col">Item</th><th scope="col" class="who-h">Shared by</th><th scope="col" class="num">Amount</th></tr></thead>
             <tbody id="lines-body"></tbody>
           </table>
           <dl class="totals" id="totals">
