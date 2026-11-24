@@ -124,7 +124,7 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0
 .tick path { stroke-dasharray: 16; stroke-dashoffset: 16; }
 .check.ok .tick { opacity: 1; }
 .check:not(.ok) .tick { display: none; }
-.receipt.is-empty .shares-heading, .receipt.is-empty .method, .receipt.is-empty .receipt-actions, .receipt.is-empty .tear { display: none; }
+.receipt.is-empty .shares-heading, .receipt.is-empty .shares, .receipt.is-empty .settlement, .receipt.is-empty .method, .receipt.is-empty .receipt-actions, .receipt.is-empty .tear { display: none; }
 .check.ok.drawn .tick path { stroke-dashoffset: 0; transition: stroke-dashoffset 300ms var(--ease-out) 380ms; }
 
 .tear { border-top: 2px dashed var(--line); margin: var(--s4) calc(-1 * var(--s5)) var(--s3); }
