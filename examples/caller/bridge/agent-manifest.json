@@ -1,0 +1,10 @@
+{
+  "networks": [
+    {
+      "name": "makan_night_helper"
+    }
+  ],
+  "actions": {
+    "version": 1
+  }
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Makan Night — receipt (example caller site)</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="site.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Makan Night</h1>
+    <p>An example caller site for Kongsi. Tonight's receipt. This page knows the dishes, not the maths: its assistant asks <a href="http://127.0.0.1:8471/">Kongsi</a> to split it, after you agree.</p>
+  </header>
+  <main>
+    <section class="receipt" aria-labelledby="r-h">
+      <h2 id="r-h">Receipt</h2>
+      <table>
+        <thead><tr><th>Seat</th><th>Item</th><th class="n">Qty</th><th class="n">Each</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p id="charges"></p>
+    </section>
+    <section id="assistant" class="assistant" aria-labelledby="assistant-heading">
+      <h2 id="assistant-heading">Ask Makan Night</h2>
+      <p>Ask about the receipt, or ask to split it. Splitting is handed to Kongsi, another agentic website, and runs in your browser on your own AI provider.</p>
+      <p class="assistant-note">Your messages and this receipt go to the AI provider you choose in the settings below. Before anything is sent to Kongsi, a card asks you.</p>
+      <p id="assistant-status" role="status">Connecting the assistant…</p>
+      <div id="agent-app">
+        <div data-ns-slot="header"></div>
+        <div class="assistant-panels">
+          <div data-ns-slot="chat"></div>
+          <div data-ns-slot="agents"></div>
+        </div>
+        <div data-ns-slot="settings"></div>
+      </div>
+    </section>
+  </main>
+  <script type="module">
+    import { RECEIPT } from "./js/receipt.js";
+    const rows = document.getElementById("rows");
+    for (const l of RECEIPT.lines) {
+      const tr = document.createElement("tr");
+      for (const [v, cls] of [[l.seat], [l.item], [String(l.qty), "n"], [`RM ${l.unitPrice.toFixed(2)}`, "n"]]) {
+        const td = document.createElement("td");
+        td.textContent = v;
+        if (cls) td.className = cls;
+        tr.append(td);
+      }
+      rows.append(tr);
+    }
+    const c = RECEIPT.charges;
+    document.getElementById("charges").textContent = `Service charge ${c.servicePct}%, tax ${c.taxPct}% (also on service), cash rounding to ${c.rounding}. ${RECEIPT.diners} diners.`;
+  </script>
+</body>
+</html>

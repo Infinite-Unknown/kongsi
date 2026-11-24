@@ -1,0 +1,17 @@
+{
+  "protocol": "nsdeploy-link/v1",
+  "exports": [
+    {
+      "network": "makan_night_helper",
+      "front_man": "makan_night_helper",
+      "aliases": [
+        "makan_night_helper"
+      ],
+      "url": "makan_night_helper"
+    }
+  ],
+  "imports": [],
+  "link_updates": {
+    "mode": "browser-local"
+  }
+}

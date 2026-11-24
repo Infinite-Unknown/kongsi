@@ -1,0 +1,76 @@
+{
+  "brand": "Makan Night",
+  "networks": [
+    {
+      "name": "makan_night_helper",
+      "front_man": "makan_night_helper",
+      "hocon": "./makan_night_helper.network.json",
+      "description": "Ask about tonight's receipt, or ask me to have Kongsi split it.",
+      "tags": [
+        "example",
+        "caller-site"
+      ],
+      "sample_queries": [
+        "What did seat 2 order?",
+        "Split the bill between the three seats.",
+        "Can I pay by card here?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [
+    "http://127.0.0.1:8471"
+  ],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Calls the partner sites in allowed_peers (Kongsi) after the visitor agrees."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "makan_night_helper",
+    "front_man": "makan_night_helper",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#7a2e1f"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "makan_night_helper",
+        "front_man": "makan_night_helper",
+        "aliases": [
+          "makan_night_helper"
+        ],
+        "url": "makan_night_helper"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_receipt"
+    ]
+  }
+}

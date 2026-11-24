@@ -1,0 +1,26 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 Georgia, "Times New Roman", serif; background: #fbf3ea; color: #2a1d17; }
+header, main { width: min(1100px, 100% - 32px); margin-inline: auto; }
+header { padding: 28px 0 8px; }
+.tag { display: inline-block; font: 600 12px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .1em; background: #7a2e1f; color: #fff; padding: 3px 10px; border-radius: 99px; margin: 0; }
+h1 { font-size: 2.6rem; margin: 8px 0 4px; }
+main { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; padding-bottom: 40px; }
+.receipt { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ecd9c6; }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th, td { text-align: left; padding: 6px 4px; border-bottom: 1px dashed #ecd9c6; }
+.n { text-align: right; font-family: ui-monospace, Menlo, monospace; }
+#charges { font-size: .9rem; color: #6d5546; }
+.assistant { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ecd9c6; }
+.assistant h2, .receipt h2 { margin-top: 0; }
+.assistant-note { font-size: .85rem; color: #6d5546; }
+#agent-app { --ns-font: system-ui, sans-serif; --ns-bg: #ffffff; --ns-fg: #2a1d17; --ns-primary: #7a2e1f; --ns-accent: #5c2116; --ns-border: #ecd9c6; --ns-panelbg: #ffffff; --ns-msgbg: #f6ece2; --ns-muted: #6d5546; }
+.assistant-panels { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; margin-top: 12px; }
+#agent-app.ns-composed-app [data-ns-slot="chat"] { height: 560px; }
+#agent-app .ns-chat { background: var(--ns-bg); }
+#agent-app button { margin: 0; }
+#agent-app .ns-consent { background: #fffbeb; }
+#agent-app .ns-msgs:has(.ns-consent-actions) > .ns-turn-status { display: none; }
+#agent-app .ns-msg { overflow-wrap: break-word; }
+#agent-app .ns-consent-actions { flex-wrap: wrap; }
+#agent-app .ns-consent-actions button { white-space: nowrap; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } .assistant-panels { grid-template-columns: 1fr; } }

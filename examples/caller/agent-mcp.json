@@ -1,0 +1,7 @@
+{
+  "protocol": "nsdeploy-agent-mcp/v1",
+  "network": "makan_night_helper",
+  "front_man": "makan_night_helper",
+  "available": false,
+  "reason": "This is a static bundle; a public MCP facade requires an application host."
+}
