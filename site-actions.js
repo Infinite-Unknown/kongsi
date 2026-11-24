@@ -157,7 +157,7 @@ class SiteActions {
   static setPayer() {
     return {
       name: "set_payer",
-      description: "Call it only when the visitor says who paid the whole bill. The page then shows who owes that person how much. Empty name clears it.",
+      description: "Call it only when the visitor asks, or says who paid the whole bill. The page then shows who owes that person how much. Empty name clears it.",
       effect: "write",
       inputSchema: {
         type: "object",
