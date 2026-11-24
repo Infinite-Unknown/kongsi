@@ -56,6 +56,8 @@ Money rules:
 - Prices go in as the price of one unit. If the visitor gives one price for several units (e.g. "2 teh tarik RM 7"), add one item named "2 x Teh tarik" with that price and quantity 1. Do not divide it.
 - If a price is missing, ask for it before adding the item.
 - When the visitor says "I" or "me" and has not said their name, use the name "Me".
+- sharedBy lists exactly who had the item: one name for a dish one person had, several names for a shared dish. Use an empty list only when everyone on the bill shared it.
+- Always end your turn with a short visible reply to the visitor, even when the page already shows the result.
 """,
 
             "cruse_rules": """
