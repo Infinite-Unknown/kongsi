@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kongsi — split the bill, to the sen</title>
+  <meta name="description" content="Kongsi splits a restaurant bill between friends: who shared what, service charge, tax and 5-sen rounding. Tell its assistant who ate what; the page does the maths, so every share adds up to the total.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Agent network for other agent sites and tools: agent-manifest.json -->
+  <link rel="alternate" type="application/json" href="agent-manifest.json" title="Agent manifest">
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="site.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="./" aria-label="Kongsi home">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M14 4.2A12 12 0 1 0 27.8 18H14z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 2.2A12 12 0 0 1 29.8 14H18z" fill="currentColor"/></svg>
+        <span>Kongsi</span>
+      </a>
+      <nav aria-label="Sections">
+        <a href="#assistant">Assistant</a>
+        <a href="#editor">Edit by hand</a>
+        <a href="#agents">For agent sites</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro wrap">
+      <h1>Split the bill, <em>to the sen.</em></h1>
+      <p class="lede">Tell the assistant who had what. The page does the maths: each shared dish split fairly, service charge and tax in proportion, the total rounded to 5&nbsp;sen, and every share adding up exactly to the bill.</p>
+    </section>
+
+    <div class="wrap workspace">
+      <section id="assistant" class="assistant panel" aria-labelledby="assistant-heading">
+        <div class="panel-head">
+          <h2 id="assistant-heading">Ask Kongsi</h2>
+          <p>Describe the meal in your own words, like <q>Ali had nasi lemak RM 12.90, Mei and I shared satay RM 18, 10% service, 6% SST, I paid</q>. The assistant fills in the bill on this page; it never does the sums itself.</p>
+        </div>
+        <p class="assistant-note">Your messages and this bill go to the AI provider you choose in the settings below. Clearing the bill asks you first.</p>
+        <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+        <div id="agent-app">
+          <div data-ns-slot="header"></div>
+          <div class="assistant-panels">
+            <div data-ns-slot="chat"></div>
+            <div data-ns-slot="agents"></div>
+          </div>
+          <div data-ns-slot="settings"></div>
+        </div>
+      </section>
+
+      <aside class="receipt-col" aria-labelledby="receipt-heading">
+        <div class="receipt" id="receipt">
+          <div class="receipt-top">
+            <h2 id="receipt-heading">The bill</h2>
+            <span class="receipt-version" id="bill-version">v0</span>
+          </div>
+          <p class="receipt-empty" id="receipt-empty">No items yet. Ask the assistant, or add them by hand below.</p>
+          <table class="lines" id="lines" aria-label="Items on the bill">
+            <thead><tr><th scope="col">Item</th><th scope="col">Shared by</th><th scope="col" class="num">Amount</th></tr></thead>
+            <tbody id="lines-body"></tbody>
+          </table>
+          <dl class="totals" id="totals">
+            <div><dt>Subtotal</dt><dd id="t-subtotal">RM 0.00</dd></div>
+            <div id="row-discount"><dt>Discount</dt><dd id="t-discount">RM 0.00</dd></div>
+            <div><dt id="t-service-label">Service charge</dt><dd id="t-service">RM 0.00</dd></div>
+            <div><dt id="t-tax-label">Tax</dt><dd id="t-tax">RM 0.00</dd></div>
+            <div id="row-rounding"><dt>Rounding</dt><dd id="t-rounding">RM 0.00</dd></div>
+            <div class="grand"><dt>Total</dt><dd id="t-total">RM 0.00</dd></div>
+          </dl>
+          <div class="tear" aria-hidden="true"></div>
+          <h3 class="shares-heading">Each person pays</h3>
+          <ul class="shares" id="shares"></ul>
+          <p class="check" id="shares-check"></p>
+          <div id="settlement-box" class="settlement" hidden>
+            <h3>Pay back</h3>
+            <ul id="settlement"></ul>
+          </div>
+          <p class="method">Shared items are split equally. Discount, service charge, tax and rounding follow what each person had.</p>
+          <div class="receipt-actions">
+            <button type="button" id="copy-summary" class="ghost">Copy summary</button>
+            <span id="copy-status" role="status"></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section id="editor" class="wrap editor" aria-labelledby="editor-heading">
+      <h2 id="editor-heading">Edit the bill by hand</h2>
+      <p class="sub">Everything the assistant does, you can do here too. Both use the same rules.</p>
+      <div class="editor-grid">
+        <div class="panel">
+          <h3>People</h3>
+          <form id="person-form" class="row-form" novalidate>
+            <label for="person-name">Name</label>
+            <input id="person-name" name="personName" maxlength="30" autocomplete="off" placeholder="e.g. Aisyah">
+            <button type="submit">Add</button>
+          </form>
+          <p class="form-error" id="person-error" role="alert"></p>
+          <ul class="chips" id="people-list" aria-label="People on the bill"></ul>
+          <label for="paid-by" class="field-label">Paid by</label>
+          <select id="paid-by"><option value="">Nobody yet</option></select>
+        </div>
+
+        <div class="panel">
+          <h3>Add an item</h3>
+          <form id="item-form" novalidate>
+            <div class="grid-3">
+              <div class="span-3"><label for="item-name">Item</label><input id="item-name" name="itemName" maxlength="60" autocomplete="off" placeholder="e.g. Char kuey teow"></div>
+              <div><label for="item-price">Price each (RM)</label><input id="item-price" name="itemPrice" inputmode="decimal" placeholder="9.50"></div>
+              <div><label for="item-qty">Qty</label><input id="item-qty" name="itemQuantity" type="number" min="1" max="99" value="1"></div>
+            </div>
+            <fieldset class="sharers">
+              <legend>Shared by <span class="hint">(none ticked = everyone)</span></legend>
+              <div id="item-sharers" class="sharer-boxes"></div>
+            </fieldset>
+            <button type="submit">Add item</button>
+            <p class="form-error" id="item-error" role="alert"></p>
+          </form>
+          <ul class="item-list" id="item-list" aria-label="Items, with remove buttons"></ul>
+        </div>
+
+        <div class="panel">
+          <h3>Charges</h3>
+          <form id="charges-form" novalidate>
+            <div class="grid-2">
+              <div><label for="service-pct">Service charge (%)</label><input id="service-pct" name="servicePct" type="number" min="0" max="30" step="0.5"></div>
+              <div><label for="tax-pct">Tax / SST (%)</label><input id="tax-pct" name="taxPct" type="number" min="0" max="30" step="0.5"></div>
+              <div><label for="discount">Discount (RM)</label><input id="discount" name="discount" inputmode="decimal"></div>
+              <div><label for="rounding">Rounding</label>
+                <select id="rounding" name="rounding">
+                  <option value="nearest_5_sen">Nearest 5 sen</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
+            </div>
+            <label class="check-label"><input id="tax-on-service" type="checkbox"> Tax also applies to the service charge</label>
+            <button type="submit">Update charges</button>
+            <p class="form-error" id="charges-error" role="alert"></p>
+          </form>
+          <div class="danger-zone">
+            <button type="button" id="clear-bill" class="danger">Clear the whole bill</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agents" class="wrap agents" aria-labelledby="agents-heading">
+      <h2 id="agents-heading">For agent sites</h2>
+      <div class="agents-grid">
+        <div>
+          <p>Kongsi is an <strong>open agentic website</strong>. Its agent network is public data that any browser runtime can load, and its assistant runs entirely in your browser on the AI provider you choose.</p>
+          <p>A restaurant's or a trip planner's assistant can hand a bill to Kongsi. After its visitor agrees on a consent card, Kongsi's network runs in that visitor's browser and uses Kongsi's shared <code>calculate_split</code> tool, which runs Kongsi's own code on Kongsi's origin. It reads nothing from this page and keeps nothing.</p>
+        </div>
+        <dl class="endpoints">
+          <div><dt>Network URL</dt><dd><code id="network-url">./kongsi_bill_splitter</code></dd></div>
+          <div><dt>Manifest</dt><dd><a href="agent-manifest.json"><code>agent-manifest.json</code></a></dd></div>
+          <div><dt>Network definition</dt><dd><a href="kongsi_bill_splitter.network.json"><code>kongsi_bill_splitter.network.json</code></a> (source: <a href="kongsi_bill_splitter.hocon"><code>.hocon</code></a>)</dd></div>
+          <div><dt>Shared with other sites</dt><dd><code>calculate_split</code> (read only, through <code>bridge/</code>)</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Kongsi keeps the bill in this browser only. Amounts are in Malaysian Ringgit. Check the bill against your receipt before anyone pays.</p>
+    <p>Browser agent runtime: nsdeploy (Apache-2.0), via the open agentic web reference skill.</p>
+  </footer>
+</body>
+</html>

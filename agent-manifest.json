@@ -1,0 +1,88 @@
+{
+  "brand": "Kongsi",
+  "networks": [
+    {
+      "name": "kongsi_bill_splitter",
+      "front_man": "kongsi_assistant",
+      "hocon": "./kongsi_bill_splitter.network.json",
+      "description": "Tell me who had what, and I will put it on the bill. The page works out every share to the sen.",
+      "tags": [
+        "agentified-website",
+        "bill-splitting",
+        "calculator",
+        "malaysia"
+      ],
+      "sample_queries": [
+        "Ali had nasi lemak RM 12.90, Mei had char kuey teow RM 11.50 and we all shared satay RM 18. 10% service charge, 6% SST. Ali paid.",
+        "How much does each person on the bill pay?",
+        "Three of us shared a RM 96.40 dinner with 10% service and 6% tax. What does each pay, rounded to 5 sen?",
+        "Clear the bill so we can start a new one.",
+        "Can you send Mei's share to Ali by DuitNow?"
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Local agents and page-local actions only. Other agent sites may call this network; its bridge shares calculate_split."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "kongsi_bill_splitter",
+    "front_man": "kongsi_assistant",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#0d5b48"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "kongsi_bill_splitter",
+        "front_man": "kongsi_assistant",
+        "aliases": [
+          "kongsi_bill_splitter",
+          "kongsi_assistant"
+        ],
+        "url": "kongsi_bill_splitter"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_bill",
+      "add_people",
+      "remove_person",
+      "add_items",
+      "update_item",
+      "remove_item",
+      "set_charges",
+      "set_payer",
+      "calculate_split",
+      "clear_bill"
+    ]
+  }
+}

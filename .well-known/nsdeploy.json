@@ -1,0 +1,18 @@
+{
+  "protocol": "nsdeploy-link/v1",
+  "exports": [
+    {
+      "network": "kongsi_bill_splitter",
+      "front_man": "kongsi_assistant",
+      "aliases": [
+        "kongsi_bill_splitter",
+        "kongsi_assistant"
+      ],
+      "url": "kongsi_bill_splitter"
+    }
+  ],
+  "imports": [],
+  "link_updates": {
+    "mode": "browser-local"
+  }
+}
