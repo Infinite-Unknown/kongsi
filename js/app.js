@@ -134,8 +134,11 @@ class BillView {
       }
       input.value = EXAMPLE_MEAL;
       input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.focus();
-      input.scrollIntoView({ block: "center", behavior: REDUCED_MOTION() ? "auto" : "smooth" });
+      input.focus({ preventScroll: true });
+      const box = input.getBoundingClientRect();
+      if (box.bottom > window.innerHeight || box.top < 0) {
+        input.scrollIntoView({ block: "nearest", behavior: REDUCED_MOTION() ? "auto" : "smooth" });
+      }
     });
 
     $("copy-summary").addEventListener("click", async () => {

@@ -1,0 +1,6 @@
+Kongsi
+Copyright 2026 the Kongsi authors
+
+This product includes the nsdeploy browser runtime (runtime/), Apache License 2.0,
+as distributed in https://github.com/cognizant-ai-labs/agentic-web (skills/agentify-website/runtime).
+Tests in tests/ adapt Apache-2.0 templates from the same repository.

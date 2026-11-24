@@ -59,7 +59,7 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0
 .masthead nav a:hover { color: #fff; text-decoration: underline; }
 
 /* ---------- Intro ---------- */
-.intro { padding: var(--s6) 0 var(--s5); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr); gap: var(--s5); align-items: end; }
+.intro { padding: var(--s5) 0 var(--s4); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr); gap: var(--s5); align-items: end; }
 .intro h1 { font-size: clamp(2.25rem, 4.4vw, 3.5rem); line-height: 1.02; margin: 0; font-weight: 800; letter-spacing: -0.03em; }
 .intro h1 em { font-style: normal; color: var(--green); background: linear-gradient(transparent 64%, var(--saffron-soft) 64%); padding: 0 2px; }
 .lede { max-width: 46ch; color: var(--muted); font-size: 1.02rem; margin: 0; }
@@ -68,7 +68,7 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: -0
 .workspace { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr); gap: var(--s5); align-items: start; }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s5); }
 .panel h2, .panel h3 { margin: 0 0 var(--s2); }
-.assistant .panel-head h2 { font-size: 1.5rem; }
+.assistant .panel-head h2 { font-size: 1.5rem; margin-bottom: var(--s1); }
 .panel-head p { margin: 0 0 var(--s3); color: var(--muted); max-width: 66ch; }
 .panel-head q { color: var(--ink); font-style: italic; }
 
@@ -217,7 +217,7 @@ main button.icon-btn:not(#agent-app button) { background: transparent; color: va
 .footer p { margin: var(--s1) 0; }
 
 /* ---------- Assistant (runtime UI) ---------- */
-.assistant-note { font-size: 0.82rem; color: var(--muted); margin: 0 0 var(--s1); }
+.assistant-note { font-size: 0.88rem; color: var(--muted); margin: 0 0 var(--s1); }
 #assistant-status { font-size: 0.85rem; color: var(--green); font-weight: 600; margin: 0 0 var(--s3); }
 #agent-app {
   --ns-font: var(--sans);
@@ -231,7 +231,7 @@ main button.icon-btn:not(#agent-app button) { background: transparent; color: va
   --ns-muted: #675e53;
 }
 .assistant-panels { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: var(--s3); margin-top: var(--s3); }
-#agent-app.ns-composed-app [data-ns-slot="chat"] { height: 540px; }
+#agent-app.ns-composed-app [data-ns-slot="chat"] { height: clamp(480px, calc(100vh - 420px), 620px); }
 #agent-app .ns-chat { background: var(--ns-bg); }
 #agent-app input[type="checkbox"], #agent-app input[type="radio"] { width: auto; }
 #agent-app .ns-header { flex-wrap: wrap; }
