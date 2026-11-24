@@ -1,0 +1,13 @@
+# local only
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.DS_Store
+*.log
+# working notes, not part of the project
+BRIEF.md
+BUILD_LOG.md
+SUBMIT_CHECKLIST.md
+assets/raw/
