@@ -1,4 +1,4 @@
-# Kongsi — design
+# Kongsi - design
 
 Mode: **Operate** (a tool people use at the table, on a phone or a laptop, right after a meal).
 
@@ -33,7 +33,7 @@ clay `#c0623b`, teal `#2f8f9d`, plum `#7d4e7a`, olive `#7a8b3a`, then repeat.
 Type:
 - Display: **Bricolage Grotesque** 700/800 (warm, slightly quirky grotesque), sizes 56 / 40 / 28 / 22.
 - Text: **Hanken Grotesk** 400/500/600, 16 px body, 14 px secondary, 12 px labels.
-- Figures: **JetBrains Mono** 500 with tabular numerals — amounts only.
+- Figures: **JetBrains Mono** 500 with tabular numerals - amounts only.
 - Loaded from Google Fonts with system fallbacks; the page stays usable if they fail.
 
 Radius: 8 (controls) / 14 (cards) / 999 (chips). Shadow: one soft, offset paper shadow
@@ -49,7 +49,7 @@ Gutters 24 px (16 px under 680 px). Section separation 64 px; inside cards 24 px
 | Screen / region | Hero | Primary action |
 |---|---|---|
 | First viewport (1440×900) | The receipt, right column, with its split bar | Describe the meal in the chat ("Try the example" fills the input). With no AI key yet: **Set up the AI model** in the status callout |
-| Edit by hand | — (secondary, recedes: flat cards, smaller headings) | Add item |
+| Edit by hand | - (secondary, recedes: flat cards, smaller headings) | Add item |
 | For agent sites | Network URL block | Open `agent-manifest.json` |
 
 ## Motion plan

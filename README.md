@@ -1,8 +1,8 @@
-# Kongsi — split the bill, to the sen
+# Kongsi - split the bill, to the sen
 
 Kongsi ("share" in Malay) is an **open agentic website** for splitting a shared restaurant bill.
 You tell its assistant who had what, in your own words. The assistant puts it on the bill by
-calling the page's own functions, and the page — not the language model — works out every
+calling the page's own functions, and the page - not the language model - works out every
 share: shared dishes split equally, service charge and tax in proportion, the total rounded to
 5 sen (Malaysian cash rounding), and the shares always adding up exactly to the total.
 
@@ -16,8 +16,8 @@ origin.
 
 Splitting a bill is everyday arithmetic that people get wrong and language models get wrong
 more often: rounding drifts, service charge is applied to the wrong base, shares do not add up.
-Kongsi uses the agent for what it is good at — turning "Mei and I shared the satay" into
-structured items — and keeps the money maths in ordinary, tested code.
+Kongsi uses the agent for what it is good at - turning "Mei and I shared the satay" into
+structured items - and keeps the money maths in ordinary, tested code.
 
 ## How it follows the open agentic web spec
 
@@ -29,7 +29,7 @@ Built on the [Minimum Viable Specification for a Worldwide Agentic Web](https://
 | Portable network (Neuro SAN HOCON, published as resolved JSON) | `kongsi_bill_splitter.hocon` → `kongsi_bill_splitter.network.json` |
 | Site manifest | `agent-manifest.json` (network, front agent, router, closed peer policy, actions) |
 | Peer link map | `links.json` |
-| Browser runtime | `runtime/` — the nsdeploy browser runtime (Apache-2.0) as patched by the agentic-web `agentify-website` skill, unchanged |
+| Browser runtime | `runtime/` - the nsdeploy browser runtime (Apache-2.0) as patched by the agentic-web `agentify-website` skill, unchanged |
 | Interface for people | the chat on `index.html`, next to the live bill |
 | LLM and key settings (BYOK) | **AI model settings** under the chat: any OpenAI-compatible provider, Connect with Otari / OpenRouter, or a local model |
 | Grounded site actions | `site-actions.js`: 10 `website_*` tools (read, write, irreversible) wrapping `js/bill-store.js` |
@@ -97,8 +97,8 @@ node "$SKILL_DIR/scripts/check_partner.mjs" http://127.0.0.1:8471/kongsi_bill_sp
 | `calculate_split` | read | What-if split of a bill given in full; changes nothing (also shared with other sites) |
 | `clear_bill` | irreversible | Starts over, after the visitor confirms in the site's dialog |
 
-It declines what the site cannot do — payments (DuitNow, transfers), messaging, receipt photos,
-currency conversion — and points to the page's **Copy summary** button instead.
+It declines what the site cannot do - payments (DuitNow, transfers), messaging, receipt photos,
+currency conversion - and points to the page's **Copy summary** button instead.
 
 ## Calling Kongsi from another agent site
 
