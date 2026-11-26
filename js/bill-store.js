@@ -27,7 +27,7 @@ const STORAGE_KEY = "kongsi.bill.v1";
 
 export class BillStore {
   /**
-   * :param options: {storage} — a Storage-like object to keep the bill across reloads, or null.
+   * :param options: {storage} - a Storage-like object to keep the bill across reloads, or null.
    */
   constructor({ storage = null } = {}) {
     this.storage = storage;
